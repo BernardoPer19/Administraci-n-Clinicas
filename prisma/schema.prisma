@@ -1,0 +1,64 @@
+// schema.prisma
+
+datasource db {
+  provider = "postgresql" // o mysql/sqlite segun uses
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum ReservationOrigin {
+  ONLINE
+  IN_PERSON
+  PHONE
+}
+
+// ----------------- MODELS -----------------
+model Patient {
+  id           String        @id @default(cuid())
+  name         String
+  phone        String        @unique
+  age          Int
+  createdAt    DateTime      @default(now())
+  observations String?
+  email       String        @unique
+  // Relaciones
+  reservations Reservation[]
+}
+
+model Service {
+  id          String        @id @default(cuid())
+  name        String
+  price       Float
+  description String?
+  color       String?
+  
+  // Relaciones
+  reservations Reservation[]
+}
+
+model Reservation {
+  id        String             @id @default(cuid())
+  date      DateTime
+  time      String
+  status    ReservationStatus  @default(PENDING)
+  origin    ReservationOrigin?
+  notes     String?
+  createdAt DateTime           @default(now())
+
+  // Relaciones
+  patient   Patient @relation(fields: [patientId], references: [id])
+  patientId String
+
+  service   Service @relation(fields: [serviceId], references: [id])
+  serviceId String
+}
