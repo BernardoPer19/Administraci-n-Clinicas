@@ -21,7 +21,10 @@ interface EditPatientDialogProps {
   children: React.ReactNode;
 }
 
-export function EditPatientDialog({ patient, children }: EditPatientDialogProps) {
+export function EditPatientDialog({
+  patient,
+  children,
+}: EditPatientDialogProps) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: patient.name,
@@ -61,43 +64,59 @@ export function EditPatientDialog({ patient, children }: EditPatientDialogProps)
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="font-serif">Nombre completo</Label>
+            <Label htmlFor="name" className="font-serif">
+              Nombre completo
+            </Label>
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone" className="font-serif">Teléfono</Label>
+            <Label htmlFor="phone" className="font-serif">
+              Teléfono
+            </Label>
             <Input
               id="phone"
               value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="font-serif">Email</Label>
+            <Label htmlFor="email" className="font-serif">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="age" className="font-serif">Edad</Label>
+            <Label htmlFor="age" className="font-serif">
+              Edad
+            </Label>
             <Input
               id="age"
               type="number"
               value={formData.age}
-              onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, age: e.target.value })
+              }
               required
               min={1}
               max={120}
@@ -105,17 +124,25 @@ export function EditPatientDialog({ patient, children }: EditPatientDialogProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="observations" className="font-serif">Observaciones</Label>
+            <Label htmlFor="observations" className="font-serif">
+              Observaciones
+            </Label>
             <Textarea
               id="observations"
               value={formData.observations}
-              onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, observations: e.target.value })
+              }
               placeholder="Historial médico, alergias, etc."
             />
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
               Cancelar
             </Button>
             <Button type="submit" className="font-sans" disabled={loading}>

@@ -1,4 +1,3 @@
-import { db } from "@/src/lib/db";
 import { Service } from "@prisma/client";
 import {
   Table,
@@ -13,12 +12,17 @@ import { Badge } from "@/src/components/ui/badge";
 import { EditServiceDialog } from "@/src/components/service/edit-service-dialog";
 import { DeleteServiceDialog } from "@/src/components/service/delete-service-dialog";
 import { Edit, Trash2 } from "lucide-react";
+import { get } from "http";
+import { getReservations } from "@/src/server/reservations/reservations-actions";
 
 interface Props {
   services: Service[];
 }
 
 export async function ServicesTable({ services }: Props) {
+
+  const reservations = await getReservations()
+
   return (
     <div className="space-y-4">
       <div className="rounded-md border">
@@ -35,9 +39,7 @@ export async function ServicesTable({ services }: Props) {
           </TableHeader>
           <TableBody>
             {services.map((service) => {
-              const reservations = db.reservations
-                .findAll()
-                .filter((r) => r.serviceId === service.id);
+             reservations.filter((r) => r.serviceId === service.id);
               return (
                 <TableRow key={service.id}>
                   <TableCell className="font-medium font-serif">

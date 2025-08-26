@@ -62,8 +62,6 @@ export function AddReservationDialog({
     }
   }, [open]);
 
-
-  
   useEffect(() => {
     if (open && selectedDate) {
       const dateString = selectedDate.toISOString().split("T")[0];

@@ -5,7 +5,6 @@ import { Plus } from "lucide-react";
 import { getPatients } from "@/src/server/patient/patient-actions";
 
 export default async function PatientsPage() {
-
   const patients = await getPatients();
 
   return (
@@ -27,7 +26,7 @@ export default async function PatientsPage() {
         </AddPatientDialog>
       </div>
 
-      <PatientsTable patients={patients}/>
+      <PatientsTable patients={patients} />
     </div>
   );
 }
