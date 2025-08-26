@@ -51,15 +51,19 @@ export function AddReservationDialog({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchData() {
-      const patientsData = await getPatients();
-      const servicesData = await getServices();
-      setPatients(patientsData);
-      setServices(servicesData);
+    if (open) {
+      async function fetchData() {
+        const patientsData = await getPatients();
+        const servicesData = await getServices();
+        setPatients(patientsData);
+        setServices(servicesData);
+      }
+      fetchData();
     }
-    fetchData();
-  }, []);
+  }, [open]);
 
+
+  
   useEffect(() => {
     if (open && selectedDate) {
       const dateString = selectedDate.toISOString().split("T")[0];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -14,26 +14,74 @@ import { Plus, MessageCircle, Monitor } from "lucide-react";
 import { Reservation, Patient, Service } from "@prisma/client";
 
 interface UseCalendarViewsProps {
-  currentDate: Date;
   reservations: Reservation[];
   patients: Patient[];
   services: Service[];
-  getReservationsForDate: (date: Date) => Reservation[];
   handleDragStart: (e: React.DragEvent, reservation: Reservation) => void;
   handleDragOver: (e: React.DragEvent) => void;
   handleDrop: (e: React.DragEvent, newDate: Date) => void;
 }
 
+type ViewType = "month" | "week" | "year";
+
 export function useCalendarViews({
-  currentDate,
   reservations,
   patients,
   services,
-  getReservationsForDate,
   handleDragStart,
   handleDragOver,
   handleDrop,
 }: UseCalendarViewsProps) {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [viewType, setViewType] = useState<ViewType>("month");
+
+  const getReservationsForDate = (date: Date) => {
+    return reservations.filter(
+      (reservation) => reservation.date.toDateString() === date.toDateString()
+    );
+  };
+
+  const navigateDate = (direction: "prev" | "next") => {
+    const newDate = new Date(currentDate);
+
+    if (viewType === "month") {
+      newDate.setMonth(newDate.getMonth() + (direction === "next" ? 1 : -1));
+    } else if (viewType === "week") {
+      newDate.setDate(newDate.getDate() + (direction === "next" ? 7 : -7));
+    } else if (viewType === "year") {
+      newDate.setFullYear(
+        newDate.getFullYear() + (direction === "next" ? 1 : -1)
+      );
+    }
+
+    setCurrentDate(newDate);
+  };
+
+  const formatDateRange = () => {
+    if (viewType === "month") {
+      return currentDate.toLocaleDateString("es", {
+        month: "long",
+        year: "numeric",
+      });
+    } else if (viewType === "week") {
+      const startOfWeek = new Date(currentDate);
+      startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+      return `${startOfWeek.toLocaleDateString("es", {
+        day: "numeric",
+        month: "short",
+      })} - ${endOfWeek.toLocaleDateString("es", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })}`;
+    } else {
+      return currentDate.getFullYear().toString();
+    }
+  };
+
   // ---------- MONTH VIEW ----------
   const renderMonthView = useCallback(() => {
     const year = currentDate.getFullYear();
@@ -92,7 +140,7 @@ export function useCalendarViews({
               </div>
 
               <div className="space-y-1">
-                {dayReservations.slice(0, 3).map((reservation) => {
+                {dayReservations.map((reservation) => {
                   const patient = patients.find(
                     (p) => p.id === reservation.patientId
                   );
@@ -313,5 +361,15 @@ export function useCalendarViews({
     );
   }, [currentDate, reservations, services]);
 
-  return { renderMonthView, renderWeekView, renderYearView };
+  return {
+    renderMonthView,
+    renderWeekView,
+    renderYearView,
+    formatDateRange,
+    currentDate,
+    setCurrentDate,
+    viewType,
+    setViewType,
+    navigateDate,
+  };
 }

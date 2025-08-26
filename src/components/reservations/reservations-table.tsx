@@ -78,7 +78,6 @@ export function ReservationsTable({ reservations, patients, services }: Props) {
       <Monitor className="h-4 w-4 text-blue-600" />
     );
 
-
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4 flex-wrap">
@@ -127,6 +126,7 @@ export function ReservationsTable({ reservations, patients, services }: Props) {
               <TableHead>Estado</TableHead>
               <TableHead>Origen</TableHead>
               <TableHead>Precio</TableHead>
+              <TableHead>Fecha de creación</TableHead>
               <TableHead>Acciones</TableHead>
             </TableRow>
           </TableHeader>
@@ -149,6 +149,19 @@ export function ReservationsTable({ reservations, patients, services }: Props) {
                   </div>
                 </TableCell>
                 <TableCell>{reservation.service.price} Bs</TableCell>
+                <TableCell>
+                  {new Date(reservation.createdAt).toLocaleDateString("es-ES", {
+                    weekday: "short", // "lun", "mar", ...
+                    day: "2-digit", // "01", "26", ...
+                    month: "long", // "agosto"
+                    year: "numeric", // "2025"
+                  })}
+                  <br />
+                  {new Date(reservation.createdAt).toLocaleDateString("es-ES", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </TableCell>
                 <TableCell className="flex gap-2">
                   <Button variant="ghost" size="sm" asChild>
                     <Link href={`/dashboard/reservations/${reservation.id}`}>
