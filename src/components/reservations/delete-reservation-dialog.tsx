@@ -27,12 +27,11 @@ export function DeleteReservationDialog({
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    setLoading(true);
     try {
       await deleteReservation(reservation.id);
       setOpen(false);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Error eliminando reserva:", error);
     }
   };
 

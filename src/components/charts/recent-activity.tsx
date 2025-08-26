@@ -9,6 +9,7 @@ import {
 import { Badge } from "@/src/components/ui/badge";
 import { db } from "@/src/lib/db";
 import { Calendar, User, MessageCircle, Monitor } from "lucide-react";
+import { formatDate } from "@/src/utils/FormteData";
 
 export function RecentActivity() {
   const reservations = db.reservations.findAll();
@@ -77,7 +78,7 @@ export function RecentActivity() {
                   <div className="flex items-center gap-2 mb-2">
                     <Calendar className="h-3 w-3 text-muted-foreground" />
                     <span className="text-xs text-muted-foreground font-serif">
-                      {service?.name} - {reservation.date.toLocaleDateString()}{" "}
+                      {service?.name} - {formatDate(reservation.date)}
                       {reservation.time}
                     </span>
                   </div>

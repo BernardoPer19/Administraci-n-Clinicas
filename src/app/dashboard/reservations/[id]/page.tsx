@@ -18,6 +18,7 @@ import {
   FileText,
 } from "lucide-react";
 import Link from "next/link";
+import {  getReservationsByID } from "@/src/server/reservations/reservations-actions";
 
 interface ReservationDetailPageProps {
   params: Promise<{ id: string }>;
@@ -27,7 +28,7 @@ export default async function ReservationDetailPage({
   params,
 }: ReservationDetailPageProps) {
   const { id } = await params;
-  const reservation = db.reservations.findById(id);
+  const reservation = await getReservationsByID(id);
 
   if (!reservation) {
     notFound();
@@ -196,7 +197,7 @@ export default async function ReservationDetailPage({
               <div className="flex items-center justify-between">
                 <span className="font-medium font-sans">Origen:</span>
                 <div className="flex items-center gap-2">
-                  {reservation.origin === "whatsapp" ? (
+                  {reservation.origin === "WHATSAPP" ? (
                     <div className="flex items-center gap-1 bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded-full">
                       <MessageCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
                       <span className="text-xs font-serif text-green-700 dark:text-green-300">

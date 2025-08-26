@@ -19,7 +19,6 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Sistema de Reservas Clínica",
   description: "Sistema completo de gestión de reservas médicas",
-  generator: "v0.app",
 };
 
 export default function RootLayout({
@@ -30,17 +29,17 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geist.variable} ${manrope.variable} antialiased`}
+      // className={`${geist.variable} ${manrope.variable} antialiased`}
     >
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        {/* <ThemeProvider */}
+          {/* attribute="class" */}
+          {/* // defaultTheme="system" */}
+          {/* // enableSystem */}
+          {/* // disableTransitionOnChange */}
+        {/* > */}
           {children}
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );

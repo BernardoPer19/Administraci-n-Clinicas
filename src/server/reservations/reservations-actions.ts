@@ -2,7 +2,7 @@
 
 import { prisma } from "@/src/lib/prisma"
 import { revalidatePath } from "next/cache"
-import { reservationSchema } from "./reservations-schema"
+import { reservationSchema, ReservationTypeZod } from "./reservations-schema"
 
 const partialReservationSchema = reservationSchema.partial()
 
@@ -27,7 +27,7 @@ export const getReservationsByID = async (id: string) => {
 }
 
 
-export const addReservation = async (input: unknown) => {
+export const addReservation = async (input: ReservationTypeZod) => {
     const data = reservationSchema.parse(input)
 
     const reservation = await prisma.reservation.create({

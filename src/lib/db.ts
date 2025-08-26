@@ -1,12 +1,5 @@
-export interface Patient {
-  id: string
-  name: string
-  phone: string
-  email: string
-  age: number
-  createdAt: Date
-  observations?: string
-}
+import { Patient } from "@prisma/client"
+
 
 export interface Service {
   id: string
@@ -46,6 +39,7 @@ const patients: Patient[] = [
     email: "carlos@email.com",
     age: 28,
     createdAt: new Date("2024-02-10"),
+    observations: null,
   },
 ]
 

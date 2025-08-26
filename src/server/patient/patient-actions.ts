@@ -2,7 +2,7 @@
 
 import { prisma } from "@/src/lib/prisma"
 import { revalidatePath } from "next/cache"
-import { patientSchema } from "./patient-schemta"
+import { patientSchema, PatientTypeZod } from "./patient-schemta"
 
 const partialPatientSchema = patientSchema.partial()
 
@@ -23,7 +23,7 @@ export const getByID = async (id: string) => {
     })
 }
 
-export const addPatient = async (input: unknown) => {
+export const addPatient = async (input: PatientTypeZod) => {
     const data = patientSchema.parse(input)
 
     const patient = await prisma.patient.create({

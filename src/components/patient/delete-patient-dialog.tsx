@@ -26,14 +26,11 @@ export function DeletePatientDialog({
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    setLoading(true);
     try {
-      await deletePatient(patient.id); // Server Action
+      await deletePatient(patient.id);
       setOpen(false);
     } catch (error) {
       console.error("Error eliminando paciente:", error);
-    } finally {
-      setLoading(false);
     }
   };
 

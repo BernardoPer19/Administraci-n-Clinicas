@@ -40,8 +40,8 @@ export function AddReservationDialog({
     serviceId: "",
     date: "",
     time: "",
-    status: "pending" as const,
-    origin: "system" as const,
+    status: "PENDING" as const,
+    origin: "SYSTEM" as const,
     notes: "",
   });
   const [patients, setPatients] = useState<{ id: string; name: string }[]>([]);
@@ -71,8 +71,7 @@ export function AddReservationDialog({
     }
   }, [open, selectedDate, selectedTime]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setLoading(true);
 
     try {
@@ -91,8 +90,8 @@ export function AddReservationDialog({
         serviceId: "",
         date: "",
         time: "",
-        status: "pending",
-        origin: "system",
+        status: "PENDING",
+        origin: "SYSTEM",
         notes: "",
       });
       setOpen(false);
@@ -204,10 +203,10 @@ export function AddReservationDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Pendiente</SelectItem>
-                  <SelectItem value="confirmed">Confirmada</SelectItem>
-                  <SelectItem value="completed">Completada</SelectItem>
-                  <SelectItem value="cancelled">Cancelada</SelectItem>
+                  <SelectItem value="PENDING">Pendiente</SelectItem>
+                  <SelectItem value="CONFIRMED">Confirmada</SelectItem>
+                  <SelectItem value="COMPLETED">Completada</SelectItem>
+                  <SelectItem value="CANCELLED">Cancelada</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -224,8 +223,8 @@ export function AddReservationDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="system">Sistema</SelectItem>
-                  <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                  <SelectItem value="SYSTEM">Sistema</SelectItem>
+                  <SelectItem value="WHATSAPP">WhatsApp</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -9,17 +9,16 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 enum ReservationStatus {
   PENDING
   CONFIRMED
+  COMPLETED
   CANCELLED
 }
 
 enum ReservationOrigin {
-  ONLINE
-  IN_PERSON
-  PHONE
+  SYSTEM
+  WHATSAPP
 }
 
 // ----------------- MODELS -----------------
@@ -30,18 +29,18 @@ model Patient {
   age          Int
   createdAt    DateTime      @default(now())
   observations String?
-  email       String        @unique
+  email        String        @unique
   // Relaciones
   reservations Reservation[]
 }
 
 model Service {
-  id          String        @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
   price       Float
   description String?
   color       String?
-  
+
   // Relaciones
   reservations Reservation[]
 }

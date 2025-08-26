@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Reservation, Patient, Service } from "@prisma/client";
+import { formatDate } from "@/src/utils/FormteData";
 
 interface Props {
   reservations: (Reservation & { patient: Patient; service: Service })[];
@@ -45,13 +46,9 @@ export function ReservationsTable({ reservations, patients, services }: Props) {
 
   const filteredReservations = reservations.filter((reservation) => {
     const matchesSearch =
-      reservation.patient.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      reservation.service.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      reservation.notes?.toLowerCase().includes(searchTerm.toLowerCase());
+      reservation.patient.name.includes(searchTerm.toLowerCase()) ||
+      reservation.service.name.includes(searchTerm.toLowerCase()) ||
+      reservation.notes?.includes(searchTerm.toLowerCase());
 
     const matchesStatus =
       statusFilter === "all" || reservation.status === statusFilter;
@@ -80,6 +77,7 @@ export function ReservationsTable({ reservations, patients, services }: Props) {
     ) : (
       <Monitor className="h-4 w-4 text-blue-600" />
     );
+
 
   return (
     <div className="space-y-4">
@@ -137,7 +135,7 @@ export function ReservationsTable({ reservations, patients, services }: Props) {
               <TableRow key={reservation.id}>
                 <TableCell>{reservation.patient.name}</TableCell>
                 <TableCell>{reservation.service.name}</TableCell>
-                <TableCell>{reservation.date.toLocaleDateString()}</TableCell>
+                <TableCell>{formatDate(reservation.date)}</TableCell>
                 <TableCell>{reservation.time}</TableCell>
                 <TableCell>
                   <Badge className={`${getStatusColor(reservation.status)}`}>
