@@ -44,14 +44,16 @@ import {
   Users,
   DollarSign,
 } from "lucide-react";
+import { Patient, Reservation, Service } from "@prisma/client";
 
-export function ReportsView() {
+interface Props {
+  reservations: Reservation[];
+  patients: Patient[];
+  services: Service[];
+}
+export function ReportsView({ reservations, patients, services }: Props) {
   const [dateRange, setDateRange] = useState("month");
   const [reportType, setReportType] = useState("revenue");
-
-  const services = db.services.findAll();
-  const patients = db.patients.findAll();
-  const reservations = db.reservations.findAll();
 
   // Filter reservations based on date range
   const getFilteredReservations = () => {
@@ -83,7 +85,7 @@ export function ReportsView() {
   // Revenue by service
   const revenueByService = services.map((service) => {
     const serviceReservations = filteredReservations.filter(
-      (r) => r.serviceId === service.id && r.status === "completed"
+      (r) => r.serviceId === service.id && r.status === "COMPLETED"
     );
     const revenue = serviceReservations.length * service.price;
 
@@ -119,7 +121,7 @@ export function ReportsView() {
     const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const monthReservations = reservations.filter(
       (r) =>
-        r.status === "completed" &&
+        r.status === "COMPLETED" &&
         r.date.getMonth() === date.getMonth() &&
         r.date.getFullYear() === date.getFullYear()
     );
@@ -137,7 +139,7 @@ export function ReportsView() {
   }
 
   const totalRevenue = filteredReservations
-    .filter((r) => r.status === "completed")
+    .filter((r) => r.status === "COMPLETED")
     .reduce((sum, r) => {
       const service = services.find((s) => s.id === r.serviceId);
       return sum + (service?.price || 0);
@@ -276,7 +278,7 @@ export function ReportsView() {
                   label={({ name, value }) => `${name}: ${value} Bs`}
                 >
                   {revenueByService.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <Cell key={`cell-${index}`} fill={entry.color ?? ""} />
                   ))}
                 </Pie>
                 <Tooltip formatter={(value) => [`${value} Bs`, "Ingresos"]} />
@@ -325,7 +327,7 @@ export function ReportsView() {
                   (r) =>
                     r.serviceId ===
                       services.find((s) => s.name === service.name)?.id &&
-                    r.status === "completed"
+                    r.status === "COMPLETED"
                 ).length;
 
                 return (

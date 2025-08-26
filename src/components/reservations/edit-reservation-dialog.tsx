@@ -154,6 +154,7 @@ export function EditReservationDialog({
                   <SelectItem value="PENDING">Pendiente</SelectItem>
                   <SelectItem value="CONFIRMED">Confirmada</SelectItem>
                   <SelectItem value="CANCELLED">Cancelada</SelectItem>
+                  <SelectItem value="COMPLETED">Completada</SelectItem>
                 </SelectContent>
               </Select>
             </div>

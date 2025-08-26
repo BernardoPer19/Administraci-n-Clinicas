@@ -1,6 +1,13 @@
 import { ReportsView } from "@/src/components/reports/reports-view";
+import { getReservations } from "@/src/server/reservations/reservations-actions";
+import { getPatients } from "@/src/server/patient/patient-actions";
+import { getServices } from "@/src/server/services/services-actions";
 
-export default function ReportsPage() {
+export default async function ReportsPage() {
+  const patients = await getPatients();
+  const services = await getServices();
+  const reservations = await getReservations();
+
   return (
     <div className="space-y-6">
       <div>
@@ -12,7 +19,12 @@ export default function ReportsPage() {
         </p>
       </div>
 
-      <ReportsView />
+      <ReportsView
+        patients={patients}
+        services={services}
+        reservations={reservations}
+      />
     </div>
   );
 }
+
