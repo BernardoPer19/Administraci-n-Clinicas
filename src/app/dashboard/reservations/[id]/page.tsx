@@ -18,10 +18,20 @@ import {
   FileText,
 } from "lucide-react";
 import Link from "next/link";
-import {  getReservationsByID } from "@/src/server/reservations/reservations-actions";
+import {
+  getReservations,
+  getReservationsByID,
+} from "@/src/server/reservations/reservations-actions";
+import { getPatientByID } from "@/src/server/patient/patient-actions";
+import { getServiceByID } from "@/src/server/services/services-actions";
 
 interface ReservationDetailPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateStaticParams() {
+  const patients = await getReservations(); // Tu función que devuelve todos los pacientes
+  return patients.map((p) => ({ id: p.id }));
 }
 
 export default async function ReservationDetailPage({
@@ -34,8 +44,8 @@ export default async function ReservationDetailPage({
     notFound();
   }
 
-  const patient = db.patients.findById(reservation.patientId);
-  const service = db.services.findById(reservation.serviceId);
+  const patient = await getPatientByID(reservation.patientId);
+  const service = await getServiceByID(reservation.serviceId);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -120,12 +130,12 @@ export default async function ReservationDetailPage({
 
         <Card
           className="border-l-4"
-          style={{ borderLeftColor: service?.color }}
+          style={{ borderLeftColor: service?.color ?? "" }}
         >
           <CardHeader className="pb-3">
             <CardTitle
               className="font-sans flex items-center gap-2"
-              style={{ color: service?.color }}
+              style={{ color: service?.color ?? "" }}
             >
               <Briefcase className="h-5 w-5" />
               Servicio
@@ -143,7 +153,7 @@ export default async function ReservationDetailPage({
                 <div className="flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full border"
-                    style={{ backgroundColor: service?.color }}
+                    style={{ backgroundColor: service?.color ?? "" }}
                   />
                   <span className="text-xs font-mono text-muted-foreground">
                     {service?.color}

@@ -5,19 +5,21 @@ import {
   CardTitle,
 } from "@/src/components/ui/card";
 import { RevenueChart } from "@/src/components/charts/revenue-chart";
-import { ReservationsChart } from "@/src/components/reservations/reservations-chart";
-import { ServicesRankingChart } from "@/src/components/service/services-ranking-chart";
+import { ReservationsChart } from "@/src/components/charts/reservations-chart";
+import { ServicesRankingChart } from "@/src/components/charts/services-ranking-chart";
 import { RecentActivity } from "@/src/components/charts/recent-activity";
-import { db } from "@/src/lib/db";
+import { getReservations } from "@/src/server/reservations/reservations-actions";
+import { getPatients } from "@/src/server/patient/patient-actions";
+import { getServices } from "@/src/server/services/services-actions";
 import { Users, Calendar, Briefcase, TrendingUp } from "lucide-react";
 
-export default function DashboardPage() {
-  const patients = db.patients.findAll();
-  const services = db.services.findAll();
-  const reservations = db.reservations.findAll();
+export default async function DashboardPage() {
+  const patients = await getPatients();
+  const services = await getServices();
+  const reservations = await getReservations();
 
   const totalRevenue = reservations
-    .filter((r) => r.status === "completed")
+    .filter((r) => r.status === "COMPLETED")
     .reduce((sum, r) => {
       const service = services.find((s) => s.id === r.serviceId);
       return sum + (service?.price || 0);
@@ -32,7 +34,7 @@ export default function DashboardPage() {
   });
 
   const pendingRevenue = reservations
-    .filter((r) => r.status === "confirmed" || r.status === "pending")
+    .filter((r) => r.status === "CONFIRMED" || r.status === "PENDING")
     .reduce((sum, r) => {
       const service = services.find((s) => s.id === r.serviceId);
       return sum + (service?.price || 0);
@@ -86,7 +88,7 @@ export default function DashboardPage() {
               {thisMonthReservations.length}
             </div>
             <p className="text-xs text-muted-foreground font-serif">
-              {reservations.filter((r) => r.status !== "cancelled").length}{" "}
+              {reservations.filter((r) => r.status !== "CANCELLED").length}{" "}
               activas total
             </p>
           </CardContent>
@@ -132,15 +134,22 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <RevenueChart />
-        <ReservationsChart />
+        <RevenueChart services={services} reservations={reservations} />
+        <ReservationsChart reservations={reservations} />
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         <div className="md:col-span-2">
-          <ServicesRankingChart />
+          <ServicesRankingChart
+            services={services}
+            reservations={reservations}
+          />
         </div>
-        <RecentActivity />
+        <RecentActivity
+          reservations={reservations}
+          patients={patients}
+          services={services}
+        />
       </div>
     </div>
   );

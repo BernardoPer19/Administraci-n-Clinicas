@@ -46,6 +46,25 @@ export const addReservation = async (input: ReservationTypeZod) => {
     return reservation
 }
 
+
+export async function findReservationsByPatient(patientId: string) {
+    if (!patientId) throw new Error("El patientId es requerido");
+
+    const reservations = await prisma.reservation.findMany({
+        where: { patientId },
+        include: {
+            patient: true,
+            service: true,
+        },
+        orderBy: {
+            date: "desc",
+        },
+    });
+
+    return reservations;
+}
+
+
 export const updateReservation = async (id: string, input: unknown) => {
     if (!id) throw new Error("ID de la reserva es requerido")
 

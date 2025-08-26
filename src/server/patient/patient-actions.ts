@@ -14,7 +14,7 @@ export const getPatients = async () => {
 }
 
 
-export const getByID = async (id: string) => {
+export const getPatientByID = async (id: string) => {
     if (!id) throw new Error("ID del paciente es requerido")
 
     return await prisma.patient.findUnique({

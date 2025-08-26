@@ -7,16 +7,17 @@ import {
   CardTitle,
 } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
-import { db } from "@/src/lib/db";
 import { Calendar, User, MessageCircle, Monitor } from "lucide-react";
 import { formatDate } from "@/src/utils/FormteData";
+import { Reservation, Patient, Service } from "@prisma/client";
 
-export function RecentActivity() {
-  const reservations = db.reservations.findAll();
-  const patients = db.patients.findAll();
-  const services = db.services.findAll();
+interface Props {
+  reservations: Reservation[];
+  patients: Patient[];
+  services: Service[];
+}
 
-  // Get recent reservations (last 10)
+export function RecentActivity({ reservations, patients, services }: Props) {
   const recentReservations = reservations
     .sort(
       (a, b) =>
@@ -60,7 +61,7 @@ export function RecentActivity() {
                 className="flex items-start gap-3 p-3 rounded-lg border"
               >
                 <div className="flex-shrink-0 mt-1">
-                  {reservation.origin === "whatsapp" ? (
+                  {reservation.origin === "WHATSAPP" ? (
                     <MessageCircle className="h-4 w-4 text-green-600" />
                   ) : (
                     <Monitor className="h-4 w-4 text-blue-600" />

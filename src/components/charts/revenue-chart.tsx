@@ -16,11 +16,14 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { db } from "@/src/lib/db";
+import { Reservation, Service } from "@prisma/client";
 
-export function RevenueChart() {
-  const services = db.services.findAll();
-  const reservations = db.reservations.findAll();
+interface Props {
+  services: Service[];
+  reservations: Reservation[];
+}
 
+export function RevenueChart({ services, reservations }: Props) {
   // Generate revenue data for the last 6 months
   const revenueData = [];
   const now = new Date();
@@ -29,7 +32,7 @@ export function RevenueChart() {
     const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const monthReservations = reservations.filter(
       (r) =>
-        r.status === "completed" &&
+        r.status === "COMPLETED" &&
         r.date.getMonth() === date.getMonth() &&
         r.date.getFullYear() === date.getFullYear()
     );
@@ -63,7 +66,7 @@ export function RevenueChart() {
                 name === "revenue" ? "Ingresos" : "Reservas",
               ]}
             />
-            <Bar dataKey="revenue" fill="hsl(var(--chart-1))" />
+            <Bar dataKey="revenue" fill="#ff0000" />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

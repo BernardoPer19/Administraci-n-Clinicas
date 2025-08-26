@@ -15,11 +15,13 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { db } from "@/src/lib/db";
+import { Reservation } from "@prisma/client";
 
-export function ReservationsChart() {
-  const reservations = db.reservations.findAll();
+interface Props {
+  reservations: Reservation[];
+}
 
+export function ReservationsChart({ reservations }: Props) {
   // Generate reservations data for the last 4 weeks
   const reservationsData = [];
   const now = new Date();
@@ -35,10 +37,10 @@ export function ReservationsChart() {
     );
 
     const systemReservations = weekReservations.filter(
-      (r) => r.origin === "system"
+      (r) => r.origin === "SYSTEM"
     ).length;
     const whatsappReservations = weekReservations.filter(
-      (r) => r.origin === "whatsapp"
+      (r) => r.origin === "WHATSAPP"
     ).length;
 
     reservationsData.push({
@@ -64,21 +66,21 @@ export function ReservationsChart() {
             <Line
               type="monotone"
               dataKey="sistema"
-              stroke="hsl(var(--chart-2))"
+              stroke="#4f46e5"
               strokeWidth={2}
               name="Sistema"
             />
             <Line
               type="monotone"
               dataKey="whatsapp"
-              stroke="hsl(var(--chart-3))"
+              stroke="#16a34a"
               strokeWidth={2}
               name="WhatsApp"
             />
             <Line
               type="monotone"
               dataKey="total"
-              stroke="hsl(var(--chart-1))"
+              stroke="#dc2626"
               strokeWidth={2}
               name="Total"
             />

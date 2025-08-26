@@ -17,31 +17,42 @@ import {
   Monitor,
 } from "lucide-react";
 import Link from "next/link";
+import {
+  getPatientByID,
+  getPatients,
+} from "@/src/server/patient/patient-actions";
+import { getServices } from "@/src/server/services/services-actions";
+import { findReservationsByPatient } from "@/src/server/reservations/reservations-actions";
 
 interface PatientDetailPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateStaticParams() {
+  const patients = await getPatients(); // Tu función que devuelve todos los pacientes
+  return patients.map((p) => ({ id: p.id }));
 }
 
 export default async function PatientDetailPage({
   params,
 }: PatientDetailPageProps) {
   const { id } = await params;
-  const patient = db.patients.findById(id);
+  const patient = await getPatientByID(id);
 
   if (!patient) {
     notFound();
   }
 
-  const reservations = db.reservations.findByPatient(id);
-  const services = db.services.findAll();
+  const reservations = await findReservationsByPatient(id);
+  const services = await getServices();
 
   const completedReservations = reservations.filter(
-    (r) => r.status === "completed"
+    (r) => r.status === "COMPLETED"
   ).length;
   const totalSpent = reservations
-    .filter((r) => r.status === "completed")
+    .filter((r) => r.status === "COMPLETED")
     .reduce((sum, r) => {
-      const service = services.find((s) => s.id === r.serviceId);
+      const service = services.find((s) => s.id === r.id);
       return sum + (service?.price || 0);
     }, 0);
 
@@ -204,7 +215,7 @@ export default async function PatientDetailPage({
                             <div className="flex items-center gap-2 mb-1">
                               <div
                                 className="w-3 h-3 rounded-full"
-                                style={{ backgroundColor: service?.color }}
+                                style={{ color: service?.color ?? "" }}
                               />
                               <p className="font-medium font-serif">
                                 {service?.name}
@@ -227,11 +238,11 @@ export default async function PatientDetailPage({
                           <div className="flex flex-col items-end gap-1">
                             <Badge
                               className={`font-sans text-xs ${
-                                reservation.status === "completed"
+                                reservation.status === "COMPLETED"
                                   ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                                  : reservation.status === "confirmed"
+                                  : reservation.status === "CONFIRMED"
                                   ? "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400"
-                                  : reservation.status === "pending"
+                                  : reservation.status === "PENDING"
                                   ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
                                   : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
                               }`}
@@ -239,7 +250,7 @@ export default async function PatientDetailPage({
                               {reservation.status}
                             </Badge>
                             <div className="flex items-center gap-1">
-                              {reservation.origin === "whatsapp" ? (
+                              {reservation.origin === "WHATSAPP" ? (
                                 <MessageCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
                               ) : (
                                 <Monitor className="h-3 w-3 text-blue-600 dark:text-blue-400" />
